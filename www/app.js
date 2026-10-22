@@ -275,9 +275,31 @@
     if (!session) return;
     const ft = FT();
     const content = Parsers.serialize(session.parsed, session.units);
-    if (!ft) { saveFile(session); return; }
+    const name = outputName(session);
+
+    // PWA: ใช้ Web Share API ส่งไฟล์ออกไปได้เลย (iOS 15+ รองรับไฟล์)
+    if (!ft && navigator.canShare) {
+      try {
+        const file = new File([content], name, { type: 'text/plain;charset=utf-8' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: session.name });
+          $('saveHint').textContent = 'แชร์แล้ว';
+          return;
+        }
+      } catch (e) { /* ผู้ใช้ยกเลิก */ }
+    }
+
+    if (!ft) {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      $('saveHint').textContent = 'ดาวน์โหลดแล้ว';
+      return;
+    }
     try {
-      await ft.shareFile({ name: outputName(session), content });
+      await ft.shareFile({ name, content });
       log('เปิด Share Sheet แล้ว', 'ok');
     } catch (e) { log('แชร์ไม่สำเร็จ: ' + e.message, 'err'); }
   }
@@ -465,6 +487,26 @@
     bind();
     renderAll();
     setStatus(settings.apiKey ? 'พร้อม' : 'ยังไม่ได้ใส่ API key', settings.apiKey ? '' : 'error');
+    registerSW();
+    handleShareTarget();
+  }
+
+  /* ---------- PWA: service worker + เปิดจาก Share Sheet ---------- */
+  function registerSW() {
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol === 'capacitor:' || location.protocol === 'file:') return; // ในแอป native ไม่ต้อง
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  function handleShareTarget() {
+    const p = new URLSearchParams(location.search);
+    const text = p.get('text') || '';
+    const url = p.get('url') || '';
+    const title = p.get('title') || '';
+    if (!text && !url) return;
+    const content = [title, text, url].filter(Boolean).join('\n');
+    addSession('แชร์เข้ามา.txt', content);
+    document.querySelector('.tab[data-tab="work"]').click();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

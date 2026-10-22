@@ -1,0 +1,20 @@
+{
+  "name": "แปลไฟล์เป็นไทย",
+  "short_name": "แปลไฟล์",
+  "description": "นำเข้าไฟล์ แปลเป็นภาษาไทยด้วย Opentyphoon พร้อมจำบริบทตัวละคร",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "lang": "th",
+  "icons": [
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}
