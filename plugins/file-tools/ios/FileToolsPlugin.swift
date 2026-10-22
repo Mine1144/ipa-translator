@@ -1,13 +1,14 @@
 import Foundation
 import Capacitor
 import UIKit
+import UniformTypeIdentifiers
 
 /// เครื่องมือจัดการไฟล์ฝั่ง native
 /// - บันทึกไฟล์ลง Documents ของแอป (เห็นใน Files.app ได้)
 /// - แชร์ไฟล์ผ่าน Share Sheet (AirDrop / Save to Files / แอปอื่น)
 /// - อ่าน/ลบ/ดูรายการไฟล์ที่บันทึกไว้
 @objc(FileToolsPlugin)
-public class FileToolsPlugin: CAPPlugin, CAPBridgedPlugin {
+public class FileToolsPlugin: CAPPlugin, CAPBridgedPlugin, UIDocumentPickerDelegate {
 
     public var identifier = "FileToolsPlugin"
     public var jsName = "FileToolsPlugin"
@@ -50,10 +51,12 @@ public class FileToolsPlugin: CAPPlugin, CAPBridgedPlugin {
         let url = workURL.appendingPathComponent(fileName)
         do {
             try content.write(to: url, atomically: true, encoding: .utf8)
+            let attrs = try? FileManager.default.attributesOfItem(atPath: url.path)
+            let size = (attrs?[.size] as? Int) ?? 0
             call.resolve([
                 "path": url.path,
                 "name": fileName,
-                "size": (try? FileManager.default.attributesOfItem(atPath: url.path)[.size] as? Int) ?? 0
+                "size": size
             ])
         } catch {
             call.reject("บันทึกไม่สำเร็จ: \(error.localizedDescription)")
