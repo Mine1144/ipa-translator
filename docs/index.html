@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="color-scheme" content="dark" />
+  <title>แปลไฟล์เป็นไทย</title>
+  <meta name="theme-color" content="#0b0d12" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="แปลไฟล์" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="dot" id="statusDot"></span>
+        <span class="brand-name">แปลไฟล์เป็นไทย</span>
+        <span class="brand-sub" id="statusText">กำลังเตรียมระบบ…</span>
+      </div>
+      <button class="icon-btn" id="btnQuickSettings" aria-label="ตั้งค่า">⚙︎</button>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab is-active" data-tab="files" role="tab">ไฟล์</button>
+      <button class="tab" data-tab="work" role="tab">แปล</button>
+      <button class="tab" data-tab="settings" role="tab">ตั้งค่า</button>
+    </nav>
+
+    <!-- ============ ไฟล์ ============ -->
+    <section class="panel is-active" id="panel-files">
+      <div class="actions">
+        <button class="btn btn-primary" id="btnImport">นำเข้าไฟล์</button>
+        <button class="btn" id="btnPaste">วางข้อความ</button>
+      </div>
+      <input type="file" id="fileInput" accept=".srt,.vtt,.txt,.md,.json,.csv,text/*" multiple hidden />
+
+      <div class="card">
+        <div class="card-head"><h2>ไฟล์ในเครื่อง</h2></div>
+        <div id="fileList" class="file-list"><p class="muted">ยังไม่มีไฟล์</p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>งานล่าสุด (เก็บในเครื่อง)</h2>
+          <button class="btn btn-sm btn-ghost" id="btnClearSessions">ล้าง</button>
+        </div>
+        <div id="sessionList" class="file-list"><p class="muted">ยังไม่มี</p></div>
+      </div>
+
+      <details class="card">
+        <summary>วางข้อความเอง</summary>
+        <textarea id="pasteArea" rows="6" placeholder="วางบทสนทนา/ซับที่ต้องการแปล…"></textarea>
+        <div class="row">
+          <input type="text" id="pasteName" placeholder="ชื่อไฟล์ (เช่น บทที่1)" />
+          <button class="btn btn-sm" id="btnAddPaste">เพิ่ม</button>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ แปล ============ -->
+    <section class="panel" id="panel-work">
+      <div class="card" id="workHead">
+        <div class="card-head">
+          <h2 id="workTitle">ยังไม่ได้เลือกไฟล์</h2>
+          <span class="muted" id="workMeta"></span>
+        </div>
+        <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+        <div class="row">
+          <button class="btn btn-sm btn-primary" id="btnTranslate">เริ่มแปล</button>
+          <button class="btn btn-sm btn-ghost" id="btnCancel" disabled>หยุด</button>
+          <button class="btn btn-sm" id="btnRetry">แปลใหม่ที่พลาด</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-sm" id="btnSaveFile">บันทึกไฟล์</button>
+          <button class="btn btn-sm" id="btnShareFile">แชร์</button>
+          <span class="muted" id="saveHint"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>ต้นฉบับ → คำแปล</h2>
+          <span class="muted">แก้ไขคำแปลได้โดยตรง</span>
+        </div>
+        <div id="unitList" class="units"><p class="muted">เลือกไฟล์จากแท็บ “ไฟล์” ก่อน</p></div>
+      </div>
+
+      <details class="card">
+        <summary>บันทึกความจำชื่อที่เจอ</summary>
+        <div id="namesBox" class="chips-box"></div>
+        <p class="muted">ชื่อที่แอปจับได้จะถูกใช้ซ้ำในไฟล์ถัดไป เพื่อให้แปลตรงกัน</p>
+      </details>
+    </section>
+
+    <!-- ============ ตั้งค่า ============ -->
+    <section class="panel" id="panel-settings">
+      <div class="card">
+        <div class="card-head"><h2>Opentyphoon API</h2></div>
+        <label class="field">
+          <span>API key</span>
+          <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" />
+        </label>
+        <div class="row">
+          <button class="btn btn-sm" id="btnTestApi">ทดสอบการเชื่อมต่อ</button>
+          <span class="muted" id="apiTestResult"></span>
+        </div>
+        <label class="field">
+          <span>Base URL</span>
+          <input type="text" id="baseUrl" value="https://api.opentyphoon.ai/v1" />
+        </label>
+        <label class="field">
+          <span>โมเดล</span>
+          <select id="model">
+            <option value="typhoon-v2.5-30b-a3b-instruct">typhoon-v2.5-30b-a3b-instruct (แม่นสุด)</option>
+            <option value="typhoon-v2.1-12b-instruct">typhoon-v2.1-12b-instruct (เร็ว/ถูก)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>น้ำเสียงการแปล</h2></div>
+        <label class="field">
+          <span>ระดับภาษา</span>
+          <select id="register">
+            <option value="auto">อัตโนมัติ (ตามวัยตัวละคร)</option>
+            <option value="สุภาพ">สุภาพ</option>
+            <option value="กลาง">กลาง</option>
+            <option value="เถาะ">เถาะ</option>
+            <option value="เป็นทางการ">เป็นทางการ</option>
+          </select>
+        </label>
+        <label class="switch">
+          <input type="checkbox" id="keepTone" checked />
+          <span>รักษาน้ำเสียงต้นฉบับ (โกรธยังโกรธ เศร้ายังเศร้า)</span>
+        </label>
+        <label class="field">
+          <span>จำนวนข้อความก่อนหน้าที่ส่งเป็นบริบท</span>
+          <input type="number" id="contextLines" min="0" max="6" step="1" value="2" />
+        </label>
+        <label class="field">
+          <span>แปลทีละกี่ข้อความต่อคำขอ</span>
+          <input type="number" id="batchSize" min="5" max="40" step="1" value="15" />
+        </label>
+        <label class="field">
+          <span>คำเฉพาะที่ห้ามแปล (คั่นบรรทัด)</span>
+          <textarea id="glossary" rows="4" placeholder="Ren'Py&#10;Symphony of Despair&#10;Kanade"></textarea>
+        </label>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>ข้อมูล</h2></div>
+        <div class="row">
+          <button class="btn btn-sm btn-ghost" id="btnExportSession">ส่งออกงาน (JSON)</button>
+          <button class="btn btn-sm btn-danger" id="btnReset">ล้างทั้งหมด</button>
+        </div>
+        <p class="muted">คีย์และงานที่ทำค้างอยู่ในเครื่องเท่านั้น ไม่ได้ส่งออกนอกจาก API ที่ตั้งไว้</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="local-config.js"></script>
+  <script src="ai.js"></script>
+  <script src="parsers.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
