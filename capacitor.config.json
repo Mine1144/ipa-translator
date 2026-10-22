@@ -1,0 +1,10 @@
+{
+  "appId": "com.natee.thaifiletranslator",
+  "appName": "ThaiFileTranslator",
+  "webDir": "www",
+  "backgroundColor": "#0b0d12",
+  "ios": {
+    "contentInset": "always",
+    "scrollEnabled": false
+  }
+}

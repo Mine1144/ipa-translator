@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# ค่าเฉพาะเครื่อง (มี API key) — ห้าม commit
+www/local-config.js
+
+# Capacitor / iOS
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/Pods/
+ios/build/
+ios/DerivedData/
+
+# ผลลัพธ์
+dist/
+*.ipa
+.DS_Store
+Thumbs.db

@@ -1,0 +1,21 @@
+{
+  "name": "ipa-translator",
+  "version": "1.0.0",
+  "description": "แอปแปลไฟล์เป็นภาษาไทยด้วย Opentyphoon (สำหรับ iPhone / LiveContainer)",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "sync": "cap sync ios",
+    "copy": "cap copy ios",
+    "open:ios": "cap open ios",
+    "test": "node test/translate.test.js"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
+    "file-tools-plugin": "file:plugins/file-tools"
+  }
+}

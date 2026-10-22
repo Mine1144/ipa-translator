@@ -1,0 +1,17 @@
+{
+  "name": "file-tools-plugin",
+  "version": "1.0.0",
+  "description": "Native iOS plugin: save / share / list / read files in the app sandbox",
+  "license": "MIT",
+  "main": "index.js",
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  },
+  "keywords": [
+    "capacitor",
+    "plugin",
+    "native"
+  ]
+}
