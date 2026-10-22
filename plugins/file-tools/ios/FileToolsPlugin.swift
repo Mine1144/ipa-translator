@@ -162,7 +162,7 @@ public class FileToolsPlugin: CAPPlugin, CAPBridgedPlugin, UIDocumentPickerDeleg
                 call.reject("ไม่พบหน้าต่างแอป")
                 return
             }
-            let types: [UTType] = [.plainText, .subtitle, .text, .json, .commaSeparatedText, .data]
+            let types: [UTType] = [.plainText, .text, .json, .commaSeparatedText, .data]
             let picker = UIDocumentPickerViewController(forOpeningContentTypes: types, asCopy: true)
             picker.allowsMultipleSelection = true
             picker.delegate = self
